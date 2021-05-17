@@ -1,0 +1,12 @@
+{
+  "name": "Fofa",
+  "displayName": "Fofa",
+  "expo": {
+    "name": "Fofa",
+    "slug": "Fofa",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
