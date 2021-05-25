@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 //inport mudules
+import ButtonHomeView from '../views/ButtonHomeView.js'
 
 
 class PageManager extends React.Component
@@ -14,7 +15,7 @@ class PageManager extends React.Component
   {
     return(
     <View style={styles.Container}>
-      <Text>hey</Text>
+      <ButtonHomeView/>
     </View>
   );
   }

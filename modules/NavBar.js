@@ -56,6 +56,7 @@ const menuWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   NavBarConatiner:{
+    position: 'relative',
     width: '100%',
     height: 85,
     backgroundColor: '#629677',
@@ -65,7 +66,6 @@ const styles = StyleSheet.create({
     borderColor: "#E1B03D",
     borderBottomWidth: 2
   },
-
   MenuContainer:
   {
     position: 'absolute',
@@ -106,6 +106,8 @@ const styles = StyleSheet.create({
   },
   MenuButtonText:{
     fontSize: 30,
+    color: '#363636',
+    fontWeight: '700',
   }
 })
 
