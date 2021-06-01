@@ -2,6 +2,17 @@ import React from 'react'
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity, Animated, TouchableWithoutFeedback } from 'react-native'
 import Bars from '../files/3bar.svg'
 
+const NavButton = (props)=>{
+  return(
+    <TouchableOpacity onPress={()=>{
+    props.changePage(props.goto)
+    props.SlideOut()
+    }}>
+      <View style={styles.MenuButton}><Text style={styles.MenuButtonText}>{props.title}</Text></View>
+    </TouchableOpacity>
+  )
+}
+
 class NavBar extends React.Component
 {
   constructor(props) {
@@ -39,9 +50,8 @@ class NavBar extends React.Component
         }]}>
           <View style={styles.MenuWindow}>
             <View style={styles.MenuSpacer}/>
-            <View style={styles.MenuButton}><Text style={styles.MenuButtonText}>Home</Text></View>
-            <View style={styles.MenuButton}><Text style={styles.MenuButtonText}>All Stats</Text></View>
-            <View style={styles.MenuButton}><Text style={styles.MenuButtonText}>Calender</Text></View>
+            <NavButton goto='Home' SlideOut={this.SlideOut} title='Home' changePage={this.props.changePage}/>
+            <NavButton goto='Calander' SlideOut={this.SlideOut} title='Calander' changePage={this.props.changePage}/>
           </View>
           <TouchableWithoutFeedback onPress={this.SlideOut}>
             <View style={styles.MenuSidePanel}/>

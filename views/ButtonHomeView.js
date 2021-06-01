@@ -5,13 +5,22 @@ import { TriangleColorPicker, fromHsv } from 'react-native-color-picker'
 import ActivityButton from '../modules/ActivityButton.js'
 import Plus from '../files/plus.svg'
 import Exit from '../files/exit.svg'
+import DropDown from '../modules/DropDown.js'
 
 class ButtonHomeView extends React.Component{
   constructor(props) {
     super(props)
-    this.state = {visableAddAct: false, ButtonList: []}
+    this.state = {
+      visableAddAct: false,
+      visableOption: false,
+      optionDrop: new Animated.Value(0),
+      optionOpacity: new Animated.Value(.1),
+      ButtonList: [],
+      optionPos:{x:0,y:0}
+    }
     this.colorPicked = '#ff0000'
-    this.namePicked = '';
+    this.namePicked = ''
+    this.selectedAct = ''
   }
 
   actAdded = async (event)=>{
@@ -23,7 +32,6 @@ class ButtonHomeView extends React.Component{
         currentList = [{id:0,color:this.colorPicked,name:this.namePicked,timeStamp:new Date()}]
       else
         currentList.push({id:currentList.length,color:this.colorPicked,name:this.namePicked,timeStamp:new Date()})
-      console.log(currentList);
       await AsyncStorage.setItem('@Fofa:ActivitiesList',await JSON.stringify(currentList))
       this.namePicked = ''
       this.colorPicked = '#ff0000'
@@ -31,6 +39,62 @@ class ButtonHomeView extends React.Component{
     } catch (e) {
         alert(e)
     }
+  }
+
+  runActivity = async (name)=>{
+    let currentList = await JSON.parse(await AsyncStorage.getItem(`@Fofa:${name}`));
+    if(currentList==null)
+      currentList = [{name:name,timeStamp:new Date()}]
+    else
+      currentList.push({name:name,timeStamp:new Date()})
+    await AsyncStorage.setItem(`@Fofa:${name}`,await JSON.stringify(currentList))
+  }
+
+  optionPress = (event,actName)=>{
+    this.setState({optionPos:{x:event.nativeEvent.pageX,y:event.nativeEvent.pageY-100}, visableOption:true})
+    this.selectedAct = actName;
+    Animated.parallel([
+      Animated.timing(this.state.optionDrop,{
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(this.state.optionOpacity,{
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      })
+    ]).start()
+  }
+
+  optionCancel = ()=>{
+    Animated.parallel([
+      Animated.timing(this.state.optionDrop,{
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(this.state.optionOpacity,{
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      })
+    ]).start(()=>{
+      this.setState({visableOption:false})
+    })
+  }
+
+  deleteAct = ()=>{
+    let tempList = this.state.ButtonList;
+    tempList.forEach((action, i) => {
+      if(action.name == this.selectedAct)
+      {
+        this.state.ButtonList.splice(i,1)
+        AsyncStorage.removeItem(`@Fofa:${action.name}`)
+      }
+    })
+    AsyncStorage.setItem('@Fofa:ActivitiesList', JSON.stringify(tempList))
+    this.setState({ButtonList:tempList, visableOption:false})
   }
 
   componentDidMount()
@@ -73,8 +137,16 @@ class ButtonHomeView extends React.Component{
         </View>
       </TouchableOpacity>
         <ScrollView contentContainerStyle={styles.ButtonListContainer}>
-          {this.state.ButtonList.map(data=>(<ActivityButton color={data.color} name={data.name} key={data.id.toString()}/>))}
+          {this.state.ButtonList.map(data=>(<ActivityButton onPress={this.runActivity} color={data.color} name={data.name} key={data.timeStamp} onOptions={this.optionPress}/>))}
         </ScrollView>
+        {(this.state.visableOption)?(
+          <DropDown
+          style={{transform:[{scaleY:this.state.optionDrop}], opacity:this.state.optionOpacity}}
+          position={this.state.optionPos}
+          onDelete={this.deleteAct}
+          onCancel={this.optionCancel}
+        />):null}
+
         {(this.state.visableAddAct)?(
           <View style={styles.shadeWindow}>
             <View style={styles.AddActivitiesContainer}>
@@ -96,7 +168,6 @@ class ButtonHomeView extends React.Component{
               </View>
             </View>
           </View>):null}
-
       </View>
     )
   }
