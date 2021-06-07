@@ -52,6 +52,7 @@ class NavBar extends React.Component
             <View style={styles.MenuSpacer}/>
             <NavButton goto='Home' SlideOut={this.SlideOut} title='Home' changePage={this.props.changePage}/>
             <NavButton goto='Calander' SlideOut={this.SlideOut} title='Calander' changePage={this.props.changePage}/>
+            <NavButton goto='DataEntry' SlideOut={this.SlideOut} title='Data Entry' changePage={this.props.changePage}/>
           </View>
           <TouchableWithoutFeedback onPress={this.SlideOut}>
             <View style={styles.MenuSidePanel}/>

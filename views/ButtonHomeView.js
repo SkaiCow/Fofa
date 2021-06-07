@@ -42,11 +42,12 @@ class ButtonHomeView extends React.Component{
   }
 
   runActivity = async (name)=>{
+    console.log(this.getActionByName(name));
     let currentList = await JSON.parse(await AsyncStorage.getItem(`@Fofa:${name}`));
     if(currentList==null)
-      currentList = [{name:name,timeStamp:new Date()}]
+      currentList = [{name:name,timeStamp:new Date(),color:this.getActionByName(name).color}]
     else
-      currentList.push({name:name,timeStamp:new Date()})
+      currentList.push({name:name,timeStamp:new Date(),color:this.getActionByName(name).color})
     await AsyncStorage.setItem(`@Fofa:${name}`,await JSON.stringify(currentList))
   }
 
@@ -95,6 +96,16 @@ class ButtonHomeView extends React.Component{
     })
     AsyncStorage.setItem('@Fofa:ActivitiesList', JSON.stringify(tempList))
     this.setState({ButtonList:tempList, visableOption:false})
+  }
+
+  getActionByName = (name)=>{
+    let result = null
+    this.state.ButtonList.forEach((item, i) => {
+      if (item.name == name) {
+        result = item
+      }
+    })
+    return result
   }
 
   componentDidMount()
